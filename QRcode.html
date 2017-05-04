@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<style>
+			.modal-body {
+				top: 100px;
+				margin: 0px auto;
+			}
+		</style>
+		<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery.qrcode.min.js"></script>
+		<script>
+			$(function() {
+				//不能识别中文内容的二维码
+				//jquery-qrcode是采用charCodeAt()方式进行编码转换的。而这个方法默认会获取它的Unicode编码，
+				//如果有中文内容，在生成二维码前就要把字符串转换成UTF-8
+//				$('#qrCode').qrcode("http://www.w3school.com.cn/jquery/index.asp");
+				function toUtf8(str) {
+					var out, i, len, c;//生成4个变量
+					out = "";
+					len = str.length;
+					for (i = 0; i < len; i++) {
+						c = str.charCodeAt(i);
+//						console.log(c);
+						if ((c >= 0x0001) && (c <= 0x007F)) {
+							out += str.charAt(i);
+						} else if (c > 0x07FF) {
+							out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
+							out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F));
+							out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+						} else {
+							out += String.fromCharCode(0xC0 | ((c >> 6) & 0x1F));
+							out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+						}
+					}
+					return out;
+				}
+				var str = toUtf8("愚蠢的老谢");
+				$('#qrCode').qrcode(str); 
+			});
+		</script>
+	</head>
+
+	<body>
+		<div class="modal-body" id="qrCode"></div>
+	</body>
+
+</html>
